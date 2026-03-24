@@ -1,41 +1,5 @@
-#ifndef __KERNEL__
-#define __KERNEL__
-#endif
-#ifndef MODULE
-#define MODULE
-#endif
-
-#include <linux/module.h>
-#include <linux/netfilter.h>
-#include <linux/netfilter_ipv4.h>
-#include <linux/ip.h>
-
-static struct nf_hook_ops n;
-
-unsigned int h(void *p, struct sk_buff *s, const struct nf_hook_state *st) {
-    struct iphdr *iph;
-    if (!s) return NF_ACCEPT;
-    iph = ip_hdr(s);
-    if (iph && iph->protocol == 1) { // 1 = ICMP
-        printk(KERN_INFO "Dropped Ping Packet\n");
-        return NF_DROP;
-    }
-    return NF_ACCEPT;
-}
-
-static int __init i(void) {
-    n.hook = h;
-    n.hooknum = NF_INET_PRE_ROUTING;
-    n.pf = PF_INET;
-    n.priority = NF_IP_PRI_FIRST;
-    nf_register_net_hook(&init_net, &n);
-    return 0;
-}
-
-static void __exit e(void) {
-    nf_unregister_net_hook(&init_net, &n);
-}
-
-module_init(i);
-module_exit(e);
-MODULE_LICENSE("GPL");
+obj-m += icmp_drop.o
+all:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+clean:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
