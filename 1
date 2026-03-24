@@ -1,2 +1,3 @@
-sudo apt update
-sudo apt install -y linux-headers-$(uname -r)
+obj-m += icmp_drop.o
+all:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
