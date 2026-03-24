@@ -1,3 +1,9 @@
 obj-m += icmp_drop.o
+
+# 强制过滤掉导致报错的参数
+EXTRA_CFLAGS += $(call cc-option,-ftrivial-auto-var-init=zero)
+
 all:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) KCFLAGS="-ftrivial-auto-var-init=off" modules
+clean:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
