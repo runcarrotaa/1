@@ -1,5 +1,2 @@
-obj-m += icmp_drop.o
-all:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
-clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+sudo apt install -y gcc-12 g++-12
+sudo ln -sf /usr/bin/gcc-12 /usr/bin/gcc
